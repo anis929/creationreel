@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ReelForge — YouTube to Reels Generator</title>
+<title>ReelForge — Video to Reels Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -748,6 +748,39 @@
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── Tabs ─── */
+  .tabs-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .tab-btn {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .tab-btn:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--accent), #7c6cf0);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 2px 15px var(--accent-glow);
+  }
+
+  /* ─── Page visibility ─── */
+  .page { display: none; }
+  .page.active { display: block; }
 </style>
 </head>
 <body>
@@ -762,6 +795,10 @@
       <div class="logo-icon">▶</div>
       ReelForge
     </div>
+    <div class="tabs-container">
+      <button class="tab-btn active" id="tabYoutube" onclick="switchTab('youtube')">📺 YouTube</button>
+      <button class="tab-btn" id="tabTwitch" onclick="switchTab('twitch')">🎮 Twitch</button>
+    </div>
     <div class="nav-links">
       <a href="#" class="active">Générateur</a>
       <a href="#">Mes Projets</a>
@@ -769,6 +806,9 @@
       <a href="#" class="nav-cta">Pro ✦</a>
     </div>
   </nav>
+
+  <!-- YouTube Page -->
+  <div class="page active" id="pageYoutube">
 
   <!-- Hero -->
   <section class="hero">
@@ -946,6 +986,189 @@
 
   </div>
 
+  </div><!-- End YouTube Page -->
+
+  <!-- Twitch Page -->
+  <div class="page" id="pageTwitch">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Montage Automatique Twitch
+    </div>
+    <h1>
+      Transforme tes VODs Twitch en<br>
+      <span class="gradient-text">Reels viraux</span>
+    </h1>
+    <p>Colle un lien Twitch, notre IA découpe, monte et sous-titre automatiquement des Reels optimisés de ta rediffusion pour Instagram, TikTok & Shorts.</p>
+  </section>
+
+  <!-- Main -->
+  <div class="main-container">
+
+    <!-- Input -->
+    <section class="input-section">
+      <h2>🔗 Importer une VOD Twitch</h2>
+      <p class="subtitle">Colle le lien de ta rediffusion Twitch pour commencer l'analyse</p>
+      <div class="url-input-group">
+        <div class="url-input-wrapper">
+          <span class="icon">🎮</span>
+          <input type="text" class="url-input" id="twitchUrl" placeholder="https://www.twitch.tv/videos/..." />
+        </div>
+        <button class="btn-analyze" id="btnAnalyzeTwitch" onclick="startAnalysisTwitch()">
+          <span class="spinner" id="analyzeSpinnerTwitch"></span>
+          <span id="analyzeTextTwitch">Analyser</span>
+          <span>→</span>
+        </button>
+      </div>
+
+      <div class="settings-grid">
+        <div class="setting-card">
+          <label>Durée des Reels</label>
+          <select id="twitchReelDuration">
+            <option value="60">1 minute (min)</option>
+            <option value="90" selected>1 min 30s</option>
+            <option value="120">2 minutes</option>
+            <option value="180">3 minutes</option>
+          </select>
+        </div>
+        <div class="setting-card">
+          <label>Format</label>
+          <select id="twitchReelFormat">
+            <option value="9:16" selected>9:16 — Vertical</option>
+            <option value="1:1">1:1 — Carré</option>
+            <option value="4:5">4:5 — Portrait</option>
+          </select>
+        </div>
+        <div class="setting-card">
+          <label>Style sous-titres</label>
+          <select id="twitchSubtitleStyle">
+            <option value="modern" selected>Moderne (mot par mot)</option>
+            <option value="classic">Classique (ligne)</option>
+            <option value="karaoke">Karaoké</option>
+            <option value="minimal">Minimal</option>
+          </select>
+        </div>
+        <div class="setting-card">
+          <label>Nombre max de Reels</label>
+          <input type="number" id="twitchMaxReels" value="5" min="1" max="20" />
+        </div>
+        <div class="setting-card">
+          <label>Options</label>
+          <div class="toggle-row" style="margin-bottom:8px;">
+            <span class="toggle-label">Détection moments clés</span>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Inclure chat reactions</span>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+          </div>
+        </div>
+        <div class="setting-card">
+          <label>Langue</label>
+          <select id="twitchLanguage">
+            <option value="fr" selected>Français</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ar">العربية</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Processing -->
+    <section class="processing-section" id="processingTwitchSection">
+      <div class="video-preview" id="twitchVideoPreview">
+        <div class="video-thumbnail">
+          <img id="twitchThumbImg" src="" alt="Thumbnail"/>
+          <div class="play-overlay"><div class="play-btn">▶</div></div>
+        </div>
+        <div class="video-info">
+          <h3 id="twitchVideoTitle">Titre de la VOD</h3>
+          <div class="video-meta">
+            <span>🕐 <span id="twitchVideoDuration">--:--</span></span>
+            <span>👁 <span id="twitchVideoViews">---</span> vues</span>
+            <span>📅 <span id="twitchVideoDate">--/--/----</span></span>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6;" id="twitchVideoDesc">
+            Description de la VOD...
+          </p>
+        </div>
+      </div>
+
+      <div class="progress-container" id="twitchProgressContainer">
+        <div class="progress-header">
+          <h3 id="twitchProgressLabel">⚙️ Analyse en cours...</h3>
+          <span class="progress-percent" id="twitchProgressPercent">0%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="twitchProgressFill"></div>
+        </div>
+        <div class="steps">
+          <div class="step active" id="twitchStep1">
+            <div class="step-dot"></div>
+            <span class="step-label">Téléchargement</span>
+          </div>
+          <div class="step" id="twitchStep2">
+            <div class="step-dot"></div>
+            <span class="step-label">Extraction chat</span>
+          </div>
+          <div class="step" id="twitchStep3">
+            <div class="step-dot"></div>
+            <span class="step-label">Découpe IA</span>
+          </div>
+          <div class="step" id="twitchStep4">
+            <div class="step-dot"></div>
+            <span class="step-label">Sous-titrage</span>
+          </div>
+          <div class="step" id="twitchStep5">
+            <div class="step-dot"></div>
+            <span class="step-label">Montage</span>
+          </div>
+          <div class="step" id="twitchStep6">
+            <div class="step-dot"></div>
+            <span class="step-label">Export</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reels Output -->
+    <section class="reels-section" id="twitchReelsSection">
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-value" id="twitchStatReels">0</div>
+          <div class="stat-label">Reels créés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="twitchStatDuration">0:00</div>
+          <div class="stat-label">Durée totale</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="twitchStatWords">0</div>
+          <div class="stat-label">Mots sous-titrés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="twitchStatScore">0</div>
+          <div class="stat-label">Score viral</div>
+        </div>
+      </div>
+
+      <div class="reels-header">
+        <h2>Tes Reels <span class="count" id="twitchReelsCount">(0)</span></h2>
+        <button class="btn-download-all" onclick="showToast('📦 Téléchargement de tous les Reels...')">
+          ⬇ Tout télécharger (.zip)
+        </button>
+      </div>
+
+      <div class="reels-grid" id="twitchReelsGrid"></div>
+    </section>
+
+  </div>
+
+  </div><!-- End Twitch Page -->
+
   <footer>
     Fait avec ✦ par <a href="#">ReelForge</a> — Propulsé par l'IA · 2026
   </footer>
@@ -1112,6 +1335,164 @@
     spinner.style.display = 'none';
     analyzeText.textContent = 'Analyser';
     document.getElementById('btnAnalyze').disabled = false;
+
+    showToast('✅ ' + reels.length + ' Reels générés avec succès !');
+  }
+
+  /* ─── Tab Switching ─── */
+  function switchTab(tab) {
+    const pageYoutube = document.getElementById('pageYoutube');
+    const pageTwitch = document.getElementById('pageTwitch');
+    const tabYoutube = document.getElementById('tabYoutube');
+    const tabTwitch = document.getElementById('tabTwitch');
+
+    if (tab === 'youtube') {
+      pageYoutube.classList.add('active');
+      pageTwitch.classList.remove('active');
+      tabYoutube.classList.add('active');
+      tabTwitch.classList.remove('active');
+    } else {
+      pageYoutube.classList.remove('active');
+      pageTwitch.classList.add('active');
+      tabYoutube.classList.remove('active');
+      tabTwitch.classList.add('active');
+    }
+  }
+
+  /* ─── Twitch Analysis Functions ─── */
+  function extractTwitchVideoId(url) {
+    const match = url.match(/(?:twitch\.tv\/videos\/|clips\.twitch\.tv\/|twitch\.tv\/\w+\/clip\/)(\w+)/);
+    return match ? match[1] : null;
+  }
+
+  function startAnalysisTwitch() {
+    const url = document.getElementById('twitchUrl').value.trim();
+    if (!url) {
+      showToast('⚠️ Colle un lien Twitch valide');
+      return;
+    }
+
+    const videoId = extractTwitchVideoId(url);
+
+    // Show processing
+    const spinner = document.getElementById('analyzeSpinnerTwitch');
+    const analyzeText = document.getElementById('analyzeTextTwitch');
+    spinner.style.display = 'block';
+    analyzeText.textContent = 'Analyse...';
+    document.getElementById('btnAnalyzeTwitch').disabled = true;
+
+    // Set up preview
+    const proc = document.getElementById('processingTwitchSection');
+    proc.classList.add('visible');
+
+    if (videoId) {
+      document.getElementById('twitchThumbImg').src = `https://static-cdn.jtvnw.net/previews-ttv/live_user_${videoId}-640x360.jpg`;
+    }
+    document.getElementById('twitchVideoTitle').textContent = 'Analyse de la VOD en cours...';
+    document.getElementById('twitchVideoDuration').textContent = '28:45';
+    document.getElementById('twitchVideoViews').textContent = '1.2M';
+    document.getElementById('twitchVideoDate').textContent = '28/02/2026';
+    document.getElementById('twitchVideoDesc').textContent = 'Notre IA analyse le contenu de ta rediffusion Twitch, détecte les moments clés et le chat pour créer des Reels optimisés.';
+
+    // Scroll
+    proc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Simulate progress
+    simulateProgressTwitch();
+  }
+
+  function simulateProgressTwitch() {
+    const fill = document.getElementById('twitchProgressFill');
+    const percent = document.getElementById('twitchProgressPercent');
+    const label = document.getElementById('twitchProgressLabel');
+    const steps = [
+      { p: 15, step: 1, text: '📥 Téléchargement de la VOD...' },
+      { p: 30, step: 2, text: '💬 Extraction des données chat...' },
+      { p: 50, step: 3, text: '🧠 Découpe intelligente des segments...' },
+      { p: 70, step: 4, text: '💬 Génération des sous-titres...' },
+      { p: 88, step: 5, text: '🎬 Montage & transitions...' },
+      { p: 100, step: 6, text: '✅ Export terminé !' },
+    ];
+
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i >= steps.length) {
+        clearInterval(interval);
+        setTimeout(showReelsTwitch, 600);
+        return;
+      }
+      const s = steps[i];
+      fill.style.width = s.p + '%';
+      percent.textContent = s.p + '%';
+      label.textContent = s.text;
+
+      // Activate step dots
+      for (let j = 1; j <= 6; j++) {
+        const el = document.getElementById('twitchStep' + j);
+        el.classList.remove('active', 'done');
+        if (j < s.step) el.classList.add('done');
+        if (j === s.step) el.classList.add('active');
+      }
+
+      i++;
+    }, 1200);
+  }
+
+  function showReelsTwitch() {
+    document.getElementById('twitchProgressContainer').style.display = 'none';
+    document.getElementById('twitchVideoTitle').textContent = 'VOD analysée avec succès';
+
+    const section = document.getElementById('twitchReelsSection');
+    section.classList.add('visible');
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Stats
+    const maxReels = parseInt(document.getElementById('twitchMaxReels').value) || 5;
+    const reels = sampleReels.slice(0, maxReels);
+    document.getElementById('twitchStatReels').textContent = reels.length;
+    document.getElementById('twitchStatDuration').textContent = `${reels.length}:45`;
+    document.getElementById('twitchStatWords').textContent = (reels.length * 187).toLocaleString();
+    document.getElementById('twitchStatScore').textContent = '92/100';
+    document.getElementById('twitchReelsCount').textContent = `(${reels.length})`;
+
+    // Render cards
+    const grid = document.getElementById('twitchReelsGrid');
+    grid.innerHTML = '';
+    reels.forEach((reel, idx) => {
+      const card = document.createElement('div');
+      card.className = 'reel-card';
+      card.style.animationDelay = (idx * 0.1) + 's';
+      card.innerHTML = `
+        <div class="reel-preview">
+          <div class="reel-visual" style="background: ${gradients[idx % gradients.length]}"></div>
+          <div class="reel-number">${idx + 1}</div>
+          <div class="time-badge">${reel.duration}</div>
+          <div class="reel-mock">
+            <div class="subtitle-preview">${reel.subtitle}</div>
+          </div>
+        </div>
+        <div class="reel-info">
+          <h4>${reel.title}</h4>
+          <div class="reel-tags">
+            ${reel.tags.map(t => `<span class="reel-tag">${t}</span>`).join('')}
+            <span class="reel-tag" style="color: var(--accent-hot); background: rgba(253,121,168,0.12);">Score ${reel.viralScore}</span>
+          </div>
+          <div class="reel-actions">
+            <button onclick="showToast('👀 Aperçu du Reel ${idx+1}')">▶ Aperçu</button>
+            <button onclick="showToast('✏️ Éditeur de sous-titres')">✎ Éditer</button>
+            <button class="btn-primary-sm" onclick="showToast('⬇ Téléchargement du Reel ${idx+1}...')">⬇</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    // Reset button
+    const spinner = document.getElementById('analyzeSpinnerTwitch');
+    const analyzeText = document.getElementById('analyzeTextTwitch');
+    spinner.style.display = 'none';
+    analyzeText.textContent = 'Analyser';
+    document.getElementById('btnAnalyzeTwitch').disabled = false;
 
     showToast('✅ ' + reels.length + ' Reels générés avec succès !');
   }
